@@ -58,5 +58,9 @@ class StudentProfile(models.Model):
     id_proof = models.ImageField(upload_to='id_proof/', default='images/default.png')
     profile_image = models.ImageField(upload_to='profile_pic/', default='images/default.png')
 
+    def __str__(self):
+        return self.user.username
+
+
 
 
