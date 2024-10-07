@@ -24,3 +24,4 @@ class CustomUserAdmin(UserAdmin):
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(InterestModel)
+admin.site.register(StudentProfile)

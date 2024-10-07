@@ -48,9 +48,15 @@ class StudentProfile(models.Model):
         ('be', 'BE'),
     )
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    department = models.CharField(max_length=50, choices=DEPARTMENT_CHOICES, default='it')
+    current_year = models.CharField(max_length=50, choices=YEAR_CHOICES, default='fe')
     prn_no = models.CharField(max_length=200, null=True, blank=True)
-    prn_no = models.CharField(max_length=200, null=True, blank=True)
-    prn_no = models.CharField(max_length=200, null=True, blank=True)
-    prn_no = models.CharField(max_length=200, null=True, blank=True)
-    prn_no = models.CharField(max_length=200, null=True, blank=True)
-    prn_no = models.CharField(max_length=200, null=True, blank=True)
+    age = models.IntegerField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    address= models.TextField(null=True, blank=True)
+    fee_recipt = models.ImageField(upload_to='fee_recipts/', default='images/default.png')
+    id_proof = models.ImageField(upload_to='id_proof/', default='images/default.png')
+    profile_image = models.ImageField(upload_to='profile_pic/', default='images/default.png')
+
+
+
