@@ -70,7 +70,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'project.wsgi.application'
-
+AUTH_USER_MODEL = 'users.CustomUser'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -113,7 +113,14 @@ USE_I18N = True
 
 USE_TZ = True
 
-
+import os
+MEDIA_ROOT =  BASE_DIR / "media"
+MEDIA_URL = '/media/'
+STATIC_URL = '/static/'
+STATIC_ROOT= BASE_DIR / 'assets'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+     )
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
