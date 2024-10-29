@@ -59,7 +59,7 @@ class StudentProfile(models.Model):
     profile_image = models.ImageField(upload_to='profile_pic/', default='images/default.png')
 
     def __str__(self):
-        return self.user.username
+        return self.user.email
 
 
 
