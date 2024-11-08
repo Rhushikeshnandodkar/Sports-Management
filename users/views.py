@@ -34,3 +34,15 @@ class UserInfoApiView(APIView):
         else:
             message = {"message":"user is not authenticated"}
             return Response(message, status=status.HTTP_401_UNAUTHORIZED)
+    def patch(self, request, format=None):
+        if request.user.is_authenticated:
+            model = CustomUser.objects.get(id=request.user.id)
+            serializer = UserInfoSerializer(model, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            else:
+                messsage = {"message": "Phone number allready exists"}
+                return Response(messsage, status=status.HTTP_409_CONFLICT)
+        messsage = {"message": "please login"}
+        return Response(messsage, status=status.HTTP_401_UNAUTHORIZED)
