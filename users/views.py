@@ -5,6 +5,8 @@ from .serializers import *
 from .models import *
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
+from .serializers import UserInfoSerializer
+from rest_framework import status
 # Create your views here.
 
 class RegisterAPIView(APIView):
@@ -22,3 +24,13 @@ class RegisterAPIView(APIView):
             }
             return Response(serializer_data)
         return Response(serializer.errors)
+    
+class UserInfoApiView(APIView):
+    serializer_class = UserInfoSerializer
+    def get(self, request):
+        if request.user.is_authenticated:
+            serializer = UserInfoSerializer(request.user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            message = {"message":"user is not authenticated"}
+            return Response(message, status=status.HTTP_401_UNAUTHORIZED)
