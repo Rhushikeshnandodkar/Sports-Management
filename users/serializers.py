@@ -44,3 +44,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             return user
         else:
             serializers.ValidationError("passwords are not equal")
+
+class StudentProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentProfile
+        fields = '__all__'

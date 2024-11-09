@@ -7,6 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
 from .serializers import UserInfoSerializer
 from rest_framework import status
+from .permissions import IsAuthenticatedUser
 # Create your views here.
 
 class RegisterAPIView(APIView):
@@ -46,3 +47,28 @@ class UserInfoApiView(APIView):
                 return Response(messsage, status=status.HTTP_409_CONFLICT)
         messsage = {"message": "please login"}
         return Response(messsage, status=status.HTTP_401_UNAUTHORIZED)
+    
+class StudentProfileApiView(APIView):
+    serializer_class = StudentProfileSerializer
+    def get(self, request):
+        user = request.user
+        if user.is_authenticated and (user.user_type == 'admin' or user.user_type == 'coordinator'):
+            model = StudentProfile.objects.all()
+            serializer = StudentProfileSerializer(model, many=True)
+            return Response(serializer.data)
+        message = {"message" : "you don't have authority to see data"}
+        return Response(message, status=status.HTTP_401_UNAUTHORIZED)
+    
+class CreateStudentProfileApiView(APIView):
+    permission_classes = [IsAuthenticatedUser]
+    serializer_class = StudentProfileSerializer
+    def post(self, request, format=None):
+        data = request.data.copy()
+        data['user'] = request.user.id 
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
