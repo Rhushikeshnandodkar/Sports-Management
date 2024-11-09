@@ -7,7 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
 from .serializers import UserInfoSerializer
 from rest_framework import status
-from .permissions import IsAuthenticatedUser
+from .permissions import *
 # Create your views here.
 
 class RegisterAPIView(APIView):
@@ -63,12 +63,26 @@ class CreateStudentProfileApiView(APIView):
     permission_classes = [IsAuthenticatedUser]
     serializer_class = StudentProfileSerializer
     def post(self, request, format=None):
+        if StudentProfile.objects.filter(user=request.user).exists():
+            return Response({"message" : "Profile allready exists"}, status=status.HTTP_400_BAD_REQUEST)
         data = request.data.copy()
         data['user'] = request.user.id 
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    def patch(self, request, format=None):
+        if request.user.is_authenticated:
+            try:
+                profile = StudentProfile.objects.get(user=request.user.id)
+            except StudentProfile.objects.get(user=request.user.id).DoesNotExist:
+                return Response({"message" : "Profile does not exists"}, status=status.HTTP_404_NOT_FOUND)
+            serializer = StudentProfileSerializer(profile, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({"message" : "Something went wrong"}, status=status.HTTP_400_BAD_REQUEST)
+        message = {"message" : "you don't have authority to see data"}
+        return Response(message, status=status.HTTP_401_UNAUTHORIZED)
