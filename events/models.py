@@ -1,4 +1,3 @@
-from typing import Any
 from django.db import models
 from users.models import InterestModel
 from ckeditor.fields import RichTextField
